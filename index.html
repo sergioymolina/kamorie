@@ -312,25 +312,38 @@
       <a href="https://shopteavive.com/collections/all" class="btn btn-primary">Shop Tea</a>
     </div>
 
-    <div class="join-section fade-in">
+        <div class="join-section fade-in">
       <p class="join-label">Be the first to experience our rebirth</p>
       <div class="email-row">
         <input type="email" id="email-input" placeholder="your@email.com" aria-label="Email address" />
         <button onclick="handleJoin()">Join the Journey</button>
       </div>
+      <p class="success-msg" id="success-msg">✦ &nbsp;You're on the list. Something beautiful is coming.</p>
+      <p class="success-msg" id="error-msg" style="color:#E98B69;">Something went wrong. Please try again in a moment.</p>
     </div>
 
     <footer class="footer fade-in">
-      © 2025 Kamorie. All rights reserved. Designed by: Line Unlimited Marketing
+      © 2026 Kamorie. All rights reserved. | Design by <a href="https://lineunlimitedmarketing.com" title="Web Design in Florida">Line Unlimited Marketing</a>
     </footer>
 
   </main>
 
   <script>
-    function handleJoin() {
-      const input = document.getElementById('email-input');
-      const msg = document.getElementById('success-msg');
+    const KLAVIYO_API_KEY = 'TWbt2u';
+    const KLAVIYO_LIST_ID = 'SjBkf9';
+
+    async function handleJoin() {
+      const input    = document.getElementById('email-input');
+      const btn      = document.querySelector('.email-row button');
+      const msg      = document.getElementById('success-msg');
+      const errorMsg = document.getElementById('error-msg');
       const emailVal = input.value.trim();
+
+      // Reset states
+      errorMsg.style.display = 'none';
+      msg.style.display = 'none';
+
+      // Client-side validation
       const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
       if (!valid) {
         input.style.outline = '2px solid #E98B69';
@@ -338,10 +351,105 @@
         setTimeout(() => input.style.outline = 'none', 1800);
         return;
       }
-      input.value = '';
-      msg.style.display = 'block';
-      msg.style.opacity = '0';
-      setTimeout(() => { msg.style.transition = 'opacity 0.5s'; msg.style.opacity = '1'; }, 10);
+
+      // Loading state
+      btn.disabled = true;
+      btn.textContent = 'Joining...';
+
+      try {
+        // Step 1: Create or update profile in Klaviyo
+        const profileRes = await fetch('https://a.klaviyo.com/client/profiles/?company_id=' + KLAVIYO_API_KEY, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'revision': '2023-12-15'
+          },
+          body: JSON.stringify({
+            data: {
+              type: 'profile',
+              attributes: {
+                email: emailVal
+              }
+            }
+          })
+        });
+
+        // 200 = updated, 201 = created — both are success
+        if (!profileRes.ok && profileRes.status !== 409) {
+          throw new Error('Profile error: ' + profileRes.status);
+        }
+
+        // Parse profile ID from response (201) or re-fetch on 409 conflict
+        let profileId = null;
+        if (profileRes.status === 201) {
+          const profileData = await profileRes.json();
+          profileId = profileData?.data?.id;
+        } else if (profileRes.status === 409) {
+          // Duplicate — extract ID from error meta
+          const errData = await profileRes.json();
+          profileId = errData?.errors?.[0]?.meta?.duplicate_profile_id;
+        }
+
+        if (!profileId) throw new Error('Could not resolve profile ID');
+
+        // Step 2: Subscribe profile to list
+        const subRes = await fetch(
+          'https://a.klaviyo.com/client/subscriptions/?company_id=' + KLAVIYO_API_KEY,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'revision': '2023-12-15'
+            },
+            body: JSON.stringify({
+              data: {
+                type: 'subscription',
+                attributes: {
+                  profile: {
+                    data: {
+                      type: 'profile',
+                      id: profileId
+                    }
+                  }
+                },
+                relationships: {
+                  list: {
+                    data: {
+                      type: 'list',
+                      id: KLAVIYO_LIST_ID
+                    }
+                  }
+                }
+              }
+            })
+          }
+        );
+
+        if (!subRes.ok && subRes.status !== 202) {
+          throw new Error('Subscription error: ' + subRes.status);
+        }
+
+        // ✅ Success
+        input.value = '';
+        msg.style.display = 'block';
+        msg.style.opacity = '0';
+        setTimeout(() => {
+          msg.style.transition = 'opacity 0.5s';
+          msg.style.opacity = '1';
+        }, 10);
+
+      } catch (err) {
+        console.error('Klaviyo error:', err);
+        errorMsg.style.display = 'block';
+        errorMsg.style.opacity = '0';
+        setTimeout(() => {
+          errorMsg.style.transition = 'opacity 0.5s';
+          errorMsg.style.opacity = '1';
+        }, 10);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Join the Journey';
+      }
     }
 
     document.getElementById('email-input').addEventListener('keydown', function(e) {
