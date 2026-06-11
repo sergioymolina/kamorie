@@ -329,7 +329,7 @@
   </main>
 
   <script>
-    const KLAVIYO_API_KEY = 'TWbt2u';
+    const KLAVIYO_PUBLIC_KEY = 'TWbt2u';
     const KLAVIYO_LIST_ID = 'SjBkf9';
 
     async function handleJoin() {
@@ -360,7 +360,7 @@
   try {
 
     const response = await fetch(
-      `https://a.klaviyo.com/client/subscriptions/?company_id=${KLAVIYO_API_KEY}`,
+      `https://a.klaviyo.com/client/subscriptions/?company_id=${KLAVIYO_PUBLIC_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -394,6 +394,7 @@
     );
 
     console.log('Klaviyo status:', response.status);
+    console.log(await response.text());
 
     if (![200, 201, 202].includes(response.status)) {
       const errText = await response.text();
