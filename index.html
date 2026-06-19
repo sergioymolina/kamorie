@@ -11,11 +11,11 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --mango-coral:   #d11415;
-      --apricot-glow:  #e0ab03;
+      --mango-coral:   #FE6A00;
+      --apricot-glow:  #FDA80F;
       --apricot-light: #FAD4BB;
-      --mate-olive:    #8bc0a1;
-      --ocean-mate:    #335d69;
+      --mate-olive:    #6F8834;
+      --ocean-mate:    #4F8C8D;
       --cream:         #FDF7F2;
       --warm-white:    #FFFFFF;
       --dark:          #2C2420;
@@ -28,8 +28,8 @@
       background-color: var(--mate-olive);
       color: var(--cream);
       overflow-x: hidden;
-      background: #8BC0A1;
-      background: radial-gradient(circle,rgba(139, 192, 161, 1) 0%, rgba(54, 107, 115, 1) 100%, rgba(253, 247, 242, 1) 50%);
+      background: #6F8834;
+      background: radial-gradient(circle,rgba(139, 192, 161, 1) 0%, rgb(36, 61, 3) 100%, rgba(253, 247, 242, 1) 50%);
     }
 
 
@@ -199,8 +199,9 @@
       border: 1.5px solid var(--apricot-light);
     }
     .btn-primary:hover {
-      background: var(--apricot-glow);
-      border-color: var(--apricot-glow);
+      background: var(--mango-coral);
+      color: var(--cream);
+      border-color: var(--mango-coral);
       transform: translateY(-2px);
       box-shadow: 0 8px 24px #E98B6930;
     }
@@ -332,7 +333,7 @@
 </head>
 <body>
   <video class="bg-video" autoplay muted loop playsinline>
-  <source src="videobg-kamorie.mp4" type="video/mp4">
+  <source src="video-kamorie-alt.mp4" type="video/mp4">
 </video>
 
 <div class="video-overlay"></div>
@@ -367,7 +368,7 @@
     >
       <defs>
         <linearGradient id="vineGradient">
-          <stop offset="0%" stop-color="#a89067">
+          <stop offset="0%" stop-color="#FE6A00">
             <animate
               attributeName="offset"
               values="-1;1"
@@ -376,7 +377,7 @@
             />
           </stop>
 
-          <stop offset="50%" stop-color="#e3d5b0">
+          <stop offset="50%" stop-color="#FAD4BB">
             <animate
               attributeName="offset"
               values="0;2"
@@ -385,7 +386,7 @@
             />
           </stop>
 
-          <stop offset="100%" stop-color="#c8b68c">
+          <stop offset="100%" stop-color="#FDA80F">
             <animate
               attributeName="offset"
               values="1;3"
