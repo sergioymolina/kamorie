@@ -185,26 +185,15 @@
   pointer-events: none;
 }
 
-/* ── Oculta el botón de play nativo que iOS Safari dibuja
-   sobre el video de fondo (pseudo-elemento propio de WebKit) ── */
-.bg-video::-webkit-media-controls-start-playback-button {
-  display: none !important;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.bg-video::-webkit-media-controls {
-  display: none !important;
-}
-.bg-video::-webkit-media-controls-panel {
-  display: none !important;
-}
-
-.bg-fallback{
-  position:fixed;
-  inset:0;
-  background:url('tea-fallback.jpg') center center / cover no-repeat;
-  opacity:.4;
-  z-index:-1;
+.bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.4;
+  pointer-events: none;
 }
 
     /* ── CTA group ── */
@@ -369,15 +358,17 @@
   </style>
 </head>
 <body>
-  <video
-  class="bg-video"
-  autoplay
+  <canvas id="bgCanvas" class="bg-video"></canvas>
+
+<video
+  id="bgVideo"
   muted
   loop
   playsinline
   webkit-playsinline
   preload="auto"
-  poster="tea-fallback.jpg">
+  style="display:none;"
+>
   <source src="kamorie-tea.mp4" type="video/mp4">
 </video>
 <div class="bg-fallback"></div>
@@ -498,6 +489,71 @@ Something beautiful is
         bgVideo.style.display = 'none';
       }
     });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const video = document.getElementById('bgVideo');
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  video.muted = true;
+
+  video.play().catch(err => {
+    console.log('Safari bloqueó autoplay:', err);
+  });
+
+  function draw() {
+
+    if (
+      video.readyState >= 2 &&
+      !video.paused &&
+      !video.ended
+    ) {
+
+      const videoRatio = video.videoWidth / video.videoHeight;
+      const canvasRatio = canvas.width / canvas.height;
+
+      let drawWidth;
+      let drawHeight;
+      let x;
+      let y;
+
+      if (videoRatio > canvasRatio) {
+        drawHeight = canvas.height;
+        drawWidth = drawHeight * videoRatio;
+        x = (canvas.width - drawWidth) / 2;
+        y = 0;
+      } else {
+        drawWidth = canvas.width;
+        drawHeight = drawWidth / videoRatio;
+        x = 0;
+        y = (canvas.height - drawHeight) / 2;
+      }
+
+      ctx.drawImage(
+        video,
+        x,
+        y,
+        drawWidth,
+        drawHeight
+      );
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+
+});    
 
     const KLAVIYO_PUBLIC_KEY = 'TWbt2u';
     const KLAVIYO_LIST_ID = 'SjBkf9';
