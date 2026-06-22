@@ -184,6 +184,20 @@
   z-index: 0;
   pointer-events: none;
 }
+
+/* ── Oculta el botón de play nativo que iOS Safari dibuja
+   sobre el video de fondo (pseudo-elemento propio de WebKit) ── */
+.bg-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.bg-video::-webkit-media-controls {
+  display: none !important;
+}
+.bg-video::-webkit-media-controls-panel {
+  display: none !important;
+}
     /* ── CTA group ── */
     .cta-group {
       display: flex;
@@ -455,6 +469,26 @@ Something beautiful is
   </main>
 
   <script>
+    // Respaldo para iOS: si el autoplay es bloqueado (p. ej. Modo de Bajo
+    // Consumo), se reintenta reproducir en cuanto el usuario toque la pantalla.
+    document.addEventListener('DOMContentLoaded', () => {
+      const bgVideo = document.querySelector('.bg-video');
+      if (!bgVideo) return;
+      bgVideo.muted = true;
+      const playAttempt = bgVideo.play();
+      if (playAttempt !== undefined) {
+        playAttempt.catch(() => {
+          const retryPlay = () => {
+            bgVideo.play().catch(() => {});
+            document.removeEventListener('touchstart', retryPlay);
+            document.removeEventListener('click', retryPlay);
+          };
+          document.addEventListener('touchstart', retryPlay, { once: true });
+          document.addEventListener('click', retryPlay, { once: true });
+        });
+      }
+    });
+
     const KLAVIYO_PUBLIC_KEY = 'TWbt2u';
     const KLAVIYO_LIST_ID = 'SjBkf9';
 
