@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kamorie — We Are Evolving</title>
+  <title>Something beautiful is brewing</title>
   <meta name="description" content="Kamorie is preparing a beautiful new online experience. Join the journey and be the first to know when we launch.">
   <link rel="icon" type="image/png" href="favicon-kamorie.png">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -66,15 +66,29 @@
     }
 
     .logo-wrap img {
-      width: 300px;
+      width: 200px;
       max-width: 85vw;
+      display: block;
+      margin-bottom: 20px;
+      opacity: 1;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .logo-wrap img:hover {
+      opacity: 0.8;
+      transform: scale(1.08);
+    }
+
+    .logo-wrap-k img {
+      width: 80px;
+      max-width: 25vw;
       display: block;
 
       opacity: 1;
       transition: opacity 0.8s ease, transform 0.8s ease;
     }
 
-    .logo-wrap img:hover {
+    .logo-wrap-k img:hover {
       opacity: 0.8;
       transform: scale(1.08);
     }
@@ -155,7 +169,7 @@
   line-height: 1.75;
   color: var(--dark);
   opacity: 0.78;
-  margin-bottom: 48px;
+  margin-bottom: 20px;
 }
 
 .bg-video {
@@ -166,7 +180,7 @@
   height: 100%;
   object-fit: cover;
 
-  opacity: 0.1; 
+  opacity: 0.3; 
   z-index: 0;
   pointer-events: none;
 }
@@ -333,7 +347,7 @@
 </head>
 <body>
   <video class="bg-video" autoplay muted loop playsinline>
-  <source src="kamorie-bg.mp4" type="video/mp4">
+  <source src="kamorie-video-bubbles.mp4" type="video/mp4">
 </video>
 
 <div class="video-overlay"></div>
@@ -350,16 +364,16 @@
       <span class="ornament-line"></span>
     </div>
 
-    <div class="logo-wrap fade-in">
-    <a href="#"><img src="logo-kamorie.png" alt=""></a>
+    <div class="logo-wrap-k fade-in">
+    <a href="#"><img src="k-symbol.png" alt=""></a>
     </div>
 
     
 
 <h1 class="fade-in">
- We Are 
+Something beautiful is 
  <span class="brewing">
-    Evolving
+    brewing
     <svg
       class="brewing-vine"
       viewBox="0 0 200 20"
@@ -408,8 +422,16 @@
 </h1>
 
     <p class="body-text fade-in">
-      While we create a fresh experience for you,<br>
-      your daily ritual doesn't have to wait.
+      Our beginning was TeaVive<br>
+      Our evolution is Kamorie<br>
+      Same heart. New name. Bigger calling.
+    </p>
+
+        <div class="logo-wrap fade-in">
+    <a href="#"><img src="logo-kamorie.png" alt=""></a>
+    </div>
+    <p class="body-text fade-in">
+      While we create a fresh experience, your daily<br>beauty ritual doesn’t have to wait.
     </p>
 
     <div class="cta-group fade-in">
@@ -417,7 +439,7 @@
     </div>
 
         <div class="join-section fade-in">
-      <p class="join-label">Be the first to experience our rebirth</p>
+      <p class="join-label">Evolve with us</p>
       <div class="email-row">
         <input type="email" id="email-input" placeholder="your@email.com" aria-label="Email address" />
         <button onclick="handleJoin()">Join the Journey</button>
